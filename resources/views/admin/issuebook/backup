@@ -1,0 +1,102 @@
+   <form action="{{ route('issue_edit') }}" method="POST">
+            @csrf
+            <div class="form-group">
+              <label for="">Students Name</label>
+              <input type="hidden" class="form-control" name="book_id" value="{{ $book->id}}"/>
+              <select class="form-control"name='student_id'>
+                    <option value="">Select Student</option>
+                    @php($students=\App\Student::all())
+                    @foreach($students as $student)
+                    <option value="{{$student->name}}" {{$issuebook->student_id == $student->name ? 'selected' : '' }} >{{$student->name}}</option>
+                    @endforeach
+                  </select>
+                  <label for="">Book Title</label>
+              <select class="form-control"name='book_id'>
+                    <option value="">Select Student</option>
+                    @php($books=\App\Book::all())
+                    @foreach($books as $book)
+                    <option value="{{$book->book_title}}" {{$issuebook->book_id == $book->book_title ? 'selected' : '' }} >{{$book->book_title}}</option>
+                    @endforeach
+                  </select>
+
+                  @extends('layouts.app')
+@section('content')
+
+<div class="container">
+        <div class="row">
+            <div class="col">
+                @if(Session::has('message'))
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                        {{ Session('message') }}
+                    </div>
+                @endif
+
+                    @if(Session::has('delete-message'))
+                        <div class="alert alert-danger alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                            {{ Session('delete-message') }}
+                        </div>
+                    @endif
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                       Book - list
+                        <a href="{{ route('issuebooks.create') }}" method="get" class="btn btn-sm btn-primary float-right">Add
+                            New</a>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-bordered mb-0">
+                            <thead>
+                            <tr>
+                                <th scope="col" width="60">#</th>
+                                <th scope="col">Student Name</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Book Title</th>
+                                <th scope="col">Issued At</th>
+                                <th scope="col">Status</th>
+                                <th scope="col" width="129">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            
+                           <tr>
+
+                           @php($issuestds=\App\issuebook::all())
+                           @foreach($issuestds as $issuestd)
+                 @if($issuestd->status)
+
+                 <td>{{$issuestd->student_id}}</td>
+                 <td>{{$issuestd->name}}</td>
+                 <td>{{$issuestd->category_type}}</td>
+                 <td>{{$issuestd->book_title}}</td>
+                 <td>{{$issuestd->created_at}}</td>
+                 <td><span class="label label-success"><b>Returned already</b></span></td>
+                 <td><a href="{{route('issuebook.edit',$issuestd->id)}}"><i class="fa fa-edit"></i></a></td>
+                 
+                 @else
+                 <td>{{$issuestd->student_id}}</td>
+               <td>{{$issuestd->name}}</td>
+                 <td>{{$issuestd->category_type}}</td>
+                 <td>{{$issuestd->book_title}}</td>
+                 <td>{{$issuestd->created_at}}</td>
+                 <td><span class="label label-danger">Not Returned yet</span></td>
+                 <td><a href="{{route('issuebook.edit',$issuestd->id)}}"><i class="fa fa-edit"></i></a></td>
+                 @endif
+              
+                </tr>
+                          
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
