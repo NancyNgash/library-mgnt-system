@@ -17,8 +17,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        {
+    { {
             $users = user::orderBy('id', 'DESC')->get();
             return view('admin.user.index', compact('users'));
         }
@@ -34,6 +33,8 @@ class UserController extends Controller
         return view('admin.user.create');
     }
 
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -42,16 +43,19 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user= new User();
-        $user->name = $request->name;
-        $user->role = $request->role;
-        $user->email = $request->email;
-        $user->password = $request->password;
-        $user->password = Hash::make('secret');
+        $user = new User();
+        $name = $request->get('name');
+        $role = $request->get('role');
+        $email = $request->get('email');
+        $password = $request->get('password');
 
-    
 
-        $user->save();
+        $user = User::create([
+            'name' => $name,
+            'role' => $role,
+            'email' => $email,
+            'password' => Hash::make($password),
+        ]);
 
         Session::flash('message', 'User added successfully');
         return redirect()->route('users.index');
@@ -94,24 +98,23 @@ class UserController extends Controller
         $phone = $request->input('phone');
         $password = $request->input('password');
         $user_id = $request->input('user_id');
-       
-    
-        $update = DB::table('users')
-        ->where('id', $user_id) 
-        ->update([
-            'name'=>$name,
-            'email'=>$email,
-            'phone'=>$phone,
-            'password'=>$password
-        ]);
 
-        if($update==true )
-        {
-           Session::flash('message', 'user updated successfully');
-       return redirect()->route('users.index'); 
-        }else {
-           Session::flash('message', 'Not updated');
-       return redirect()->route('users.index');
+
+        $update = DB::table('users')
+            ->where('id', $user_id)
+            ->update([
+                'name' => $name,
+                'email' => $email,
+                'phone' => $phone,
+                'password' => $password
+            ]);
+
+        if ($update == true) {
+            Session::flash('message', 'user updated successfully');
+            return redirect()->route('users.index');
+        } else {
+            Session::flash('message', 'Not updated');
+            return redirect()->route('users.index');
         }
     }
 
@@ -129,4 +132,3 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 }
-

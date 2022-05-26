@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class AdminController extends Controller
 {
    public function index(){
-       return (Auth::user()) ? redirect()->route('admin') : $this->login();
+       return (user()) ? redirect()->route('admin') : $this->login();
    }
 
 public function login(){
@@ -19,7 +19,9 @@ public function processlogin(Request $request){
         'email'=>$request->email,
         'password'=>$request->password,
     ];
+    // dd($credentials);
     if(Auth::attempt($credentials)){
+
         return view('admin.index');
         
     }
